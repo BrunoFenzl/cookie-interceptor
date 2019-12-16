@@ -1,3 +1,5 @@
+import './styles.css';
+
 const cookieCatTemplate = (name, values, allowed) => `
 		<div id="ci-${name}" class="ci__category ${
   name === 'functional' ? 'ci__category--show' : ''
@@ -40,7 +42,7 @@ const template = (available, allowed, l10n, classes) => `
 		</div>
 	`;
 
-class CookieInterceptor {
+export class CookieInterceptor {
   constructor(options) {
     const defaults = {};
     this.options = Object.assign(defaults, options);

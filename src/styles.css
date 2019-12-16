@@ -1,0 +1,60 @@
+.ci {
+  position: fixed;
+  z-index: 1000;
+  right: 2rem;
+  bottom: 2rem;
+  max-width: 20rem;
+  font-size: 0.8rem;
+}
+
+.ci.ci--relative {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  max-width: none;
+  font-size: 1rem;
+  padding: 1rem;
+}
+
+.ci__inner {
+  display: flex;
+  flex-flow: column wrap;
+  padding: 1rem;
+  background-color: #eaeaea;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.ci__controls {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+}
+
+.ci__category {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.ci__content {
+  display: flex;
+  flex: 1 1 70%;
+  flex-flow: column nowrap;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.ci__content > strong {
+  text-transform: capitalize;
+}
+
+.ci__control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 30%;
+  padding: 1rem;
+}
+
+.ci__submit {
+  margin-top: 1rem;
+}

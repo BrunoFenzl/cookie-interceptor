@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Cookie Interceptor</title>
+    <style></style>
+    <script>
+      ciAvailableCookies = {
+        necessary: ['very_important', 'indispensable'],
+        functional: ['nice_to_have'],
+        statistical: ['we_are_watching_you'],
+        marketing: ['your_soul_belong_to_us']
+      };
+      ciCollectedCookies = window['ciCollectedCookies'] || [];
+      ci_l10n = {
+        description: 'cookieNotice',
+        saveBtn: 'Save settings',
+        categories: {
+          necessary: 'Necessary',
+          functional: 'Functional',
+          statistical: 'Statistical',
+          marketing: 'Marketing'
+        }
+      };
+    </script>
+
+    <script>
+      (function(d) {
+        var cookieDesc =
+          Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
+          Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+
+        function checkStorage() {
+          var whitelist = [];
+          var categories = localStorage.getItem('allowedCategories') || '';
+          categories.split(',').forEach(function(e) {
+            whitelist = [].concat.apply(whitelist, ciAvailableCookies[e]);
+          });
+          return whitelist;
+        }
+
+        if (cookieDesc && cookieDesc.configurable) {
+          Object.defineProperty(d, 'cookie', {
+            get: function() {
+              return cookieDesc.get.call(d);
+            },
+            set: function(val) {
+              var c = val.split('=')[0]; // first segment should be the cookie name
+              // cookie marked for removal
+              if (val[0] === '!') {
+                cookieDesc.set.call(d, val.slice(1));
+              } else if (checkStorage().indexOf(c) > -1) {
+                cookieDesc.set.call(d, val);
+              } else {
+                ciCollectedCookies.push(val);
+              }
+            }
+          });
+        }
+      })(document);
+    </script>
+  <link href="main.css" rel="stylesheet"></head>
+  <body>
+    <div></div>
+    <script>
+      document.cookie = 'very_important=true';
+      document.cookie = 'indispensable=true';
+      document.cookie = 'nice_to_have=true';
+      document.cookie = 'we_are_watching_you=true';
+      document.cookie = 'your_soul_belong_to_us=true';
+    </script>
+  <script type="text/javascript" src="cookie-interceptor.js"></script></body>
+</html>
