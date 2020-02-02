@@ -25,7 +25,7 @@ const { CookieInterceptor } = require('cookie-interceptor');
 and place following snippet in every page you want to intercept cookies:
 
 ```
-var _ci=Object.getOwnPropertyDescriptor(Document.prototype,"cookie")||Object.getOwnPropertyDescriptor(HTMLDocument.prototype,"cookie");function checkStorage(){var t=[];return(localStorage.getItem("allowedCategories")||"").split(",").forEach(function(e){t=[].concat.apply(t,ciAvailableCookies[e])}),t}_ci&&_ci.configurable&&Object.defineProperty(d,"cookie",{get:function(){return _ci.get.call(d)},set:function(e){var t=e.split("=")[0];"!"===e[0]?_ci.set.call(d,e.slice(1)):-1<checkStorage().indexOf(t)?_ci.set.call(d,e):ciCollectedCookies.push(e)}});
+var _ci=Object.getOwnPropertyDescriptor(Document.prototype,"cookie")||Object.getOwnPropertyDescriptor(HTMLDocument.prototype,"cookie");function checkStorage(){var t=[];return(localStorage.getItem("allowedCategories")||"").split(",").forEach(function(e){t=[].concat.apply(t,ciAvailableCookies[e])}),t}_ci&&_ci.configurable&&Object.defineProperty(document,"cookie",{get:function(){return _ci.get.call(d)},set:function(e){var t=e.split("=")[0];"!"===e[0]?_ci.set.call(d,e.slice(1)):-1<checkStorage().indexOf(t)?_ci.set.call(d,e):ciCollectedCookies.push(e)}});
 ```
 
 or unminified:
@@ -45,7 +45,7 @@ function checkStorage() {
 }
 
 if (_ci && _ci.configurable) {
-  Object.defineProperty(d, 'cookie', {
+  Object.defineProperty(document, 'cookie', {
     get: function() {
       return _ci.get.call(d);
     },
@@ -64,7 +64,8 @@ if (_ci && _ci.configurable) {
 }
 ```
 
-This code will hijack document.cookie and intercept every attempt to set a cookie with document.cookie = 'my_cookie=value'.
+This code will hijack document.cookie and intercept every attempt to set a cookie, for example `document.cookie = 'my_cookie=value'`.
+
 Cookies not whitelisted will be blocked.
 
 The constructor `CookieInterceptor()` expects a configuration object with the following properties:
@@ -82,11 +83,13 @@ The constructor `CookieInterceptor()` expects a configuration object with the fo
 
 ### localStorageKey: string
 
-Key in te localStorage where the cookie categories whitelist will be stored.
+Key in the localStorage where the cookie categories whitelist will be stored.
 
 ### strict: boolean
 
-Boolean indicating wether cookies that were previously allowe should be deleted once the user revokes it's permission. Default's to false.
+Boolean indicating wether cookies that were previously allowed should be deleted once the user revokes it's permission.
+
+Default's to false.
 
 ### l10n: object
 
@@ -105,7 +108,7 @@ Object containing translated strings: This object consists of the following prop
 }
 ```
 
-Where the keys inside `categories: {}` should be the same keys in config.categories object. See below.
+Where the keys inside `categories: {}` should be the same keys in `config.categories` object. See below.
 
 ### categories: object
 

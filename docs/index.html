@@ -41,7 +41,7 @@
       }
 
       if (cookieDesc && cookieDesc.configurable) {
-        Object.defineProperty(d, 'cookie', {
+        Object.defineProperty(document, 'cookie', {
           get: function() {
             return cookieDesc.get.call(d);
           },
