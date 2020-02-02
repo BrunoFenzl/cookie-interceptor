@@ -25,43 +25,45 @@ const { CookieInterceptor } = require('cookie-interceptor');
 and place following snippet in every page you want to intercept cookies:
 
 ```
-var _ci=Object.getOwnPropertyDescriptor(Document.prototype,"cookie")||Object.getOwnPropertyDescriptor(HTMLDocument.prototype,"cookie");function checkStorage(){var t=[];return(localStorage.getItem("allowedCategories")||"").split(",").forEach(function(e){t=[].concat.apply(t,ciAvailableCookies[e])}),t}_ci&&_ci.configurable&&Object.defineProperty(document,"cookie",{get:function(){return _ci.get.call(d)},set:function(e){var t=e.split("=")[0];"!"===e[0]?_ci.set.call(d,e.slice(1)):-1<checkStorage().indexOf(t)?_ci.set.call(d,e):ciCollectedCookies.push(e)}});
+!function(c){var i=Object.getOwnPropertyDescriptor(Document.prototype,"cookie")||Object.getOwnPropertyDescriptor(HTMLDocument.prototype,"cookie");i&&i.configurable&&Object.defineProperty(c,"cookie",{get:function(){return i.get.call(c)},set:function(e){var t,o=e.split("=")[0];"!"===e[0]?i.set.call(c,e.slice(1)):-1<(t=[],(localStorage.getItem("allowedCategories")||"").split(",").forEach(function(e){t=[].concat.apply(t,ciAvailableCookies[e])}),t).indexOf(o)?i.set.call(c,e):ciCollectedCookies.push(e)}})}(document);
 ```
 
 or unminified:
 
 ```
-var _ci =
-  Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
-  Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+(function(d) {
+  var cookieDesc =
+    Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
+    Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
 
-function checkStorage() {
-  var whitelist = [];
-  var categories = localStorage.getItem('allowedCategories') || '';
-  categories.split(',').forEach(function(e) {
-    whitelist = [].concat.apply(whitelist, ciAvailableCookies[e]);
-  });
-  return whitelist;
-}
+  function checkStorage() {
+    var whitelist = [];
+    var categories = localStorage.getItem('allowedCategories') || '';
+    categories.split(',').forEach(function(e) {
+      whitelist = [].concat.apply(whitelist, ciAvailableCookies[e]);
+    });
+    return whitelist;
+  }
 
-if (_ci && _ci.configurable) {
-  Object.defineProperty(document, 'cookie', {
-    get: function() {
-      return _ci.get.call(d);
-    },
-    set: function(val) {
-      var c = val.split('=')[0]; // first segment should be the cookie name
-      // cookie marked for removal
-      if (val[0] === '!') {
-        _ci.set.call(d, val.slice(1));
-      } else if (checkStorage().indexOf(c) > -1) {
-        _ci.set.call(d, val);
-      } else {
-        ciCollectedCookies.push(val);
+  if (cookieDesc && cookieDesc.configurable) {
+    Object.defineProperty(d, 'cookie', {
+      get: function() {
+        return cookieDesc.get.call(d);
+      },
+      set: function(val) {
+        var c = val.split('=')[0]; // first segment should be the cookie name
+        // cookie marked for removal
+        if (val[0] === '!') {
+          cookieDesc.set.call(d, val.slice(1));
+        } else if (checkStorage().indexOf(c) > -1) {
+          cookieDesc.set.call(d, val);
+        } else {
+          ciCollectedCookies.push(val);
+        }
       }
-    }
-  });
-}
+    });
+  }
+})(document);
 ```
 
 This code will hijack document.cookie and intercept every attempt to set a cookie, for example `document.cookie = 'my_cookie=value'`.
@@ -78,7 +80,6 @@ The constructor `CookieInterceptor()` expects a configuration object with the fo
   categories: object,
   collectedCookies: array,
 }
-
 ```
 
 ### localStorageKey: string
